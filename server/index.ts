@@ -39,42 +39,70 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
-  const server = await registerRoutes(app);
+let server: any = null;
+let appInitialized = false;
+
+// Initialize the Express app
+export async function initializeApp() {
+  if (appInitialized) return server;
+  
+  server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
+    if (!process.env.VERCEL) {
+      throw err;
+    }
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
+  // For Vercel, always serve static files in production
+  // In development, use Vite dev server
+  if (process.env.VERCEL || (process.env.NODE_ENV === "production" && !process.env.VITE)) {
+    serveStatic(app);
+  } else if (app.get("env") === "development") {
+    if (server) {
+      await setupVite(app, server);
+    }
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  // const port = 5000;
-  console.log("Serving on port", process.env.PORT, "and host", process.env.HOST_URL);
-  const listenOptions: any = {
-    port:process.env.PORT || 5000,
-    host: process.env.HOST_URL || "127.0.0.1",
-  };
+  appInitialized = true;
+  return server;
+}
 
-  if (os.platform() !== "win32") {
-    listenOptions.reusePort = true;
-  }
+// Initialize app immediately
+initializeApp().catch(console.error);
 
-  server.listen(listenOptions, () => {
-    log(`serving on port ${process.env.PORT}`);
-  });
-})();
+// Export for Vercel serverless function
+export default app;
+
+// Only start listening if not in Vercel environment
+if (!process.env.VERCEL) {
+  (async () => {
+    // Wait for app initialization to complete
+    if (!appInitialized) {
+      await initializeApp();
+    }
+    
+    console.log("Serving on port", process.env.PORT, "and host", process.env.HOST_URL);
+    const listenOptions: any = {
+      port: process.env.PORT || 5000,
+      host: process.env.HOST_URL || "127.0.0.1",
+    };
+
+    if (os.platform() !== "win32") {
+      listenOptions.reusePort = true;
+    }
+
+    if (server) {
+      server.listen(listenOptions, () => {
+        log(`serving on port ${process.env.PORT || 5000}`);
+      });
+    }
+  })();
+}
 
