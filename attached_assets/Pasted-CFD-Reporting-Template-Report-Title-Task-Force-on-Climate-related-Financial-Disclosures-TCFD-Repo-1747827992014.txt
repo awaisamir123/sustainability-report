@@ -1,0 +1,122 @@
+CFD Reporting Template
+Report Title: Task Force on Climate-related Financial Disclosures (TCFD) Report – [Company Name], [Year]
+Ideal for: Corporates, financial institutions, and SMEs following global climate-related disclosure practices.
+
+🔹 Cover Page
+Company logo
+
+Title of report
+
+Year & Reporting Period
+
+Optional: Compliance badges or ESG score highlights
+
+🔹 Executive Summary
+Overview of climate strategy and risk management
+
+Key findings and material climate risks
+
+Short summary of emissions, investments, and transition plans
+
+Call-out box: “TCFD-aligned since [year]” or “New Report – First Filing”
+
+🔹 1. Governance
+Section	Description
+Board Oversight	Roles, frequency of climate discussions, strategic decisions made.
+Management’s Role	C-suite roles, risk management team, ESG committee, KPIs.
+
+📊 Chart: Org chart highlighting governance of climate-related risks
+
+🔹 2. Strategy
+Element	Content
+Climate-Related Risks & Opportunities	Physical (acute/chronic), Transition (regulatory, reputational, market)
+Impact on Business	Value chain, geographies, products
+Time Horizons	Short (0–2 yrs), Medium (3–5 yrs), Long (5+ yrs)
+Resilience Strategy	Use of scenario analysis (e.g., 1.5°C, 2°C)
+
+📊 Recommended Charts:
+
+Scenario analysis visuals (bar/line)
+
+Risk heatmap matrix
+
+Value chain climate impact map
+
+🔹 3. Risk Management
+Topic	Description
+Processes for Identifying Risk	ESG screening tools, internal audits
+Assessment and Prioritization	Tools, stakeholder input, probability-impact scoring
+Integration into Enterprise Risk Management (ERM)	How climate is embedded in broader ERM
+
+📊 Charts:
+
+Risk scoring table
+
+Pie chart of top risk categories
+
+🔹 4. Metrics & Targets
+Metric Type	Examples
+GHG Emissions (Scopes 1, 2, 3)	Total CO₂e (metric tons), Intensity (per $ revenue)
+Energy Usage	Renewable %, Total kWh
+Targets	Net-zero by 2030/2040/2050, interim reduction goals
+Financial Impacts	CapEx/Opex on climate-related projects
+
+📊 Charts:
+
+GHG Emissions by year (bar/line)
+
+Energy source breakdown (pie)
+
+Progress against targets (progress bars)
+
+🔹 5. Appendices
+Methodologies (e.g., SBTi, ISO 14064)
+
+List of climate scenarios used
+
+Glossary of terms
+
+External data sources and partners (e.g., CDP, ISSB)
+
+✏️ Sample TCFD Report (Generic Company)
+Company: ClimateAware Corp
+Sector: Textiles
+Report Year: 2023
+Status: Second year of TCFD-aligned reporting
+
+🔸 Executive Summary:
+ClimateAware Corp recognizes climate change as a core financial risk. In 2023, we assessed our Scope 3 emissions, implemented a 1.5°C scenario analysis, and adopted board-level climate KPIs.
+
+🔸 Governance:
+Board reviews climate risks quarterly.
+
+ESG Committee includes the CFO, COO, and Head of Sustainability.
+
+KPI: % of CapEx aligned to climate mitigation.
+
+🔸 Strategy:
+Risks: Increased raw material costs (cotton), regulatory pressure in EU
+
+Opportunities: Green products, renewable energy PPA
+
+Resilience modeled via 1.5°C and 4°C scenarios
+
+📊 Scenario chart comparing GHG emissions under each scenario
+
+🔸 Risk Management:
+Risks assessed quarterly using a probability x impact matrix
+
+Physical risks prioritized by region (e.g., flooding in Southeast Asia)
+
+📊 Top 5 climate risks in heatmap format
+
+🔸 Metrics & Targets:
+Metric	2023	2022
+Scope 1 (tCO₂e)	850	1,000
+Scope 2 (tCO₂e)	600	750
+Scope 3 (tCO₂e)	5,200	N/A
+% Renewable Energy	65%	40%
+
+🎯 Target: Net-zero by 2040 (interim: -50% by 2030)
+
+📊 Emissions reduction chart (YoY)

@@ -1,0 +1,87 @@
+Objective:
+Refactor and enhance the existing TCFD Report Generator module to ensure full alignment with the official TCFD framework. The updated module should provide a comprehensive, editable workflow for each of the four pillars (Governance, Strategy, Risk Management, Metrics & Targets) and enable export to styled PDF and DOCX formats. This version should reflect actual reporting best practices and include guided inputs, visuals, and placeholders for all required sections.
+
+🔸 Update Tasks for Replit Agent
+Refactor Existing Template Structure
+
+Review current structure and ensure it includes the following required sections (in order):
+
+Cover Page
+
+Executive Summary
+
+Governance
+
+Strategy
+
+Risk Management
+
+Metrics & Targets
+
+Appendices (Methodology, Glossary, Scenario Info)
+
+Enhance Section Inputs
+
+Add clear tooltips and placeholder guidance for each input field so users understand what to enter (e.g., “Enter your Scope 1 emissions in metric tons CO₂e”).
+
+Include dropdowns or pre-filled options where appropriate (e.g., "Risk Type": Physical, Transitional, Regulatory).
+
+Allow optional uploads for emissions spreadsheets and scenario charts.
+
+Add/Upgrade Visual Modules
+
+Visualize:
+
+GHG Emissions (bar chart: Scope 1/2/3 YoY)
+
+Climate risk matrix (heatmap format)
+
+Scenario impact comparison (bar or line graph)
+
+Target progress (progress bars or pie chart)
+
+Use Chart.js or another open-source JS library
+
+Live Preview and Styling
+
+Enhance preview panel styling to reflect a professional, export-ready layout (matching the other modules' styling for consistency).
+
+Use Tailwind CSS with light/dark mode support and modern typography.
+
+Maintain a clean page structure with collapsible sections and optional summary views.
+
+Export Functionality
+
+Keep existing export functions and ensure they now include the new layout and charts.
+
+Export options:
+
+PDF (via html2pdf)
+
+DOCX (via docx.js)
+
+Update Landing Page Content
+
+Add a short explanation of TCFD and its global importance.
+
+Include external reference links:
+
+https://www.fsb-tcfd.org/
+
+https://www.cdsb.net/tcfd
+
+https://www.unpri.org/tcfd
+
+Access & User Journey
+
+This module should remain freely accessible without login.
+
+Make clear that data is not saved to a database unless the user logs in or exports.
+
+✅ Additional Guidance for Replit Team
+The updated template should match disclosure formats used by companies like BlackRock, Unilever, and S&P (see official TCFD reports).
+
+This will serve as a flagship module for climate disclosure in the sustainability platform.
+
+Ensure all content is editable and that visual assets adjust to user input.
+

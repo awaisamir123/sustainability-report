@@ -1,0 +1,95 @@
+Objective
+Develop the Annual Sustainability Report Generator as part of the Automated Sustainability Reporting Tool. This tool will enable users to generate customized sustainability reports by selecting templates, inputting their company data, and exporting the final report in PDF or Word format. The user journey should be simple and intuitive, similar to editing a document in MS Word, where the user can easily replace sample data with their company’s data and generate a polished report.
+________________________________________
+User Journey Steps for the Report Generation Tool
+1.	User Accesses the Web App
+o	The user navigates to the web app.
+2.	Select "Generate Annual Sustainability Report"
+o	The user clicks on the "Generate Annual Sustainability Report" button on the main dashboard or menu.
+3.	Choose Template
+o	The user is presented with a variety of pre-designed templates for the annual sustainability report. These templates follow global standards such as GRI, ISO, GHG Protocol, SASB, and TCFD.
+o	The user selects the template based on their preferred format or reporting standard.
+4.	Editable Document Opens
+o	Upon selection, an editable document opens, mimicking the experience of editing a document in MS Word or Google Docs.
+o	The document is pre-populated with sample data in sections like:
+	Cover Page: Company logo, name, reporting period, and mission statement.
+	Table of Contents: Auto-generated and updated dynamically.
+	Executive Summary: Pre-filled placeholders for CEO’s message and organizational overview.
+	Sustainability Metrics: Sample data on carbon emissions, energy usage, water consumption, etc.
+	Benchmarking & Goals: Sample data for industry benchmarking, net-zero commitments, and future goals.
+	Compliance Check: Pre-filled placeholders for referencing standards like GRI, ESRS, CDP, UN SDGs.
+o	The user can replace the sample data with their company’s specific data (e.g., emissions data, energy use, water consumption).
+o	Users can also edit the text, add sections, and customize the formatting (font styles, colors, headers, etc.) to fit their branding.
+5.	Preview the Final Document
+o	After completing the edits, the user can preview the final document to ensure that all data is correctly reflected.
+o	A "Preview" button will generate a real-time view of how the document will appear in its final form, including charts, graphs, and text formatting.
+o	Users can review each section and make adjustments before proceeding.
+6.	Export as PDF or Word
+o	Once the user is satisfied with the content and format, they can export the document as either a PDF or Word file.
+o	The user clicks the "Export" button, and the tool generates the final report file for download.
+o	The user is prompted to download the final report in PDF or Word format.
+________________________________________
+Replit Development Prompt
+Develop the Annual Sustainability Report Generator based on the user journey outlined above. The following tasks must be completed:
+________________________________________
+Frontend Development
+1.	Template Selection Interface
+o	Build a React.js or Next.js component where users can browse and select from a variety of report templates (e.g., GRI, TCFD, ISO).
+o	Provide a thumbnail preview for each template to help users choose the best option for their needs.
+o	Enable users to easily navigate through templates with filters (e.g., by reporting standard) and search functionality.
+2.	Editable Document Page
+o	Develop an interactive document editor (similar to MS Word or Google Docs) to allow users to edit the sustainability report.
+o	The document should contain editable sections (text, tables, images) with pre-populated sample data. Users can easily click on the sections to replace the data with their company’s information.
+o	Implement real-time auto-formatting for text, headers, and sections as users edit.
+o	Include dynamic fields for charts, graphs, and data points, so users can replace sample data with their metrics.
+o	Provide a preview button to let users view the final document before exporting.
+3.	Real-Time Data Input
+o	Implement input forms (e.g., carbon emissions, energy consumption, water usage) that allow users to input their data directly into the report.
+o	Allow CSV/Excel imports for bulk data entry, enabling users to upload large datasets and automatically populate the document.
+4.	Responsive Design
+o	Ensure the frontend is responsive, allowing users to access the tool on desktops, tablets, and mobile devices.
+o	Implement a mobile-friendly layout for form inputs, charts, and previews.
+________________________________________
+Backend Development
+1.	Data Management
+o	Set up Flask or Django backend to store user-generated data for the report (e.g., emissions, energy use, water consumption).
+o	Implement API endpoints for data entry, allowing the frontend to update and store each section of the report.
+o	Use SQLite or PostgreSQL to store user inputs, company data, and progress.
+2.	Dynamic Report Generation
+o	Implement backend logic to generate reports based on user input, integrating with the selected template.
+o	Use Python-docx for Word document generation and ReportLab for creating PDF versions of the report.
+o	Ensure that the report contains dynamically generated elements (e.g., Table of Contents, charts, graphs) populated with user data.
+3.	Chart and Graph Integration
+o	Integrate charting libraries like matplotlib or Plotly to generate dynamic charts (e.g., carbon footprint, energy consumption) that users can include in their report.
+o	Ensure the generated charts are embedded into the document with proper sizing and formatting.
+________________________________________
+Exporting & Final Output
+1.	Export Functionality
+o	Implement an Export button to allow users to download the final report as either a PDF or Word document.
+o	Ensure that the export feature generates a properly formatted document, including text, charts, tables, and images as seen in the preview.
+2.	Real-Time Feedback
+o	Provide feedback to users upon successful export (e.g., “Your report has been generated! Click here to download the PDF or Word file.”).
+o	Implement error handling if the user tries to export without entering required data or if a template is incomplete.
+________________________________________
+Deliverables
+1.	Frontend:
+o	Template selection interface with clear preview options.
+o	Editable report editor for data input, text editing, and customization.
+o	Preview and draft saving functionalities.
+o	Responsive layout for desktop, tablet, and mobile devices.
+2.	Backend:
+o	Flask/Django API to handle data input, report generation, and chart creation.
+o	Database integration for storing user-generated data and company-specific metrics.
+o	Dynamic report generation engine for Word/PDF exports.
+3.	Export Functionality:
+o	PDF/Word export options for downloading the final report.
+o	Ensure formatting is maintained in the exported files.
+4.	Testing & QA:
+o	Ensure the app works across multiple devices and browsers (desktop and mobile).
+o	Test the editable document interface, data entry, report generation, and export functionality for smooth user experience.
+________________________________________
+Additional Requirements
+•	Mobile-Responsive: Ensure that the report generator tool is mobile-friendly.
+•	Scalability: The tool should be scalable to handle large datasets and multiple users simultaneously.
+•	Security: Implement data protection and user privacy standards (e.g., GDPR compliance).
+•	Customization: Allow users to fully customize templates, including adding logos, text, and changing visual elements like charts and colors.

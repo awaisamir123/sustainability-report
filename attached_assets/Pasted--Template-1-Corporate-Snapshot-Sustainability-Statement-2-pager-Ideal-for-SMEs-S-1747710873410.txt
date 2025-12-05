@@ -1,0 +1,129 @@
+## ✅ Template 1: **Corporate Snapshot Sustainability Statement (2-pager)**
+
+**Ideal for:** SMEs, Startups, and B2B SaaS Companies
+**Design:** One-page visual company overview + one-page ESG performance table
+
+### 🔹 Page 1 – Executive Summary
+
+* **Company Logo** (top left)
+* **Tagline** (top right, e.g. “Empowering Sustainable Growth”)
+* **About Us** (50–75 words)
+* **Sustainability Vision & Strategy** (short paragraph)
+* **UN SDG Alignment** (icons or bullet list)
+* **Image Placeholder:** Photo of team/product/impact work
+
+### 🔹 Page 2 – ESG Snapshot
+
+| Metric Category | Indicator                         | 2023   | 2022  |
+| --------------- | --------------------------------- | ------ | ----- |
+| Climate         | Total GHG Emissions (tCO2e)       | 1,245  | 1,400 |
+|                 | % Renewable Energy Used           | 65%    | 42%   |
+| Social          | Female Leadership (%)             | 52%    | 48%   |
+|                 | Community Investment (\$)         | \$120K | \$85K |
+| Governance      | ESG Board Oversight (Yes/No)      | Yes    | Yes   |
+|                 | Ethics Hotline Cases Resolved (%) | 98%    | 96%   |
+
+---
+
+### ✏️ Sample Report (Template 1 – Summary)
+
+**Company Name:** Greentech AI
+**About Us:** Greentech AI is a clean-tech software firm enabling smart energy optimization for factories.
+**Sustainability Vision:** We aim to reduce 1 million tonnes of CO₂e by 2030 through AI-powered interventions.
+**SDGs Aligned:** SDG 7 (Affordable Clean Energy), SDG 9 (Innovation), SDG 13 (Climate Action)
+**Key Metrics:**
+
+* GHG emissions cut by 11% YoY
+* 65% of energy from renewables
+* \$120K invested in local STEM programs
+
+---
+
+## ✅ Template 2: **Visual Impact Report (2-page, Infographic Style)**
+
+**Ideal for:** External-facing sustainability statements, impact startups
+**Design:** Split into quadrants per theme
+
+### 🔹 Page 1 – Quadrant Summary (Icons + Stats)
+
+* **Climate**
+
+  * 🌱 Net Emissions: 1,400 tCO₂e
+  * ♻️ Renewable Energy: 68%
+* **People**
+
+  * 👩‍💼 Women in Workforce: 54%
+  * 🧑🏽‍💻 Training Hours: 1,200 hrs
+* **Governance**
+
+  * ✅ ESG Policy Adopted: 2022
+  * 💼 ESG-linked Bonus: Introduced 2023
+* **Future Targets**
+
+  * Net-Zero by 2040
+  * Zero-waste packaging by 2026
+
+### 🔹 Page 2 – Story Section
+
+* “Our Journey to Sustainability” – narrative with images and quotes
+* “Looking Ahead” – milestones timeline
+* “Our Commitments” – short text + SDG icons
+* **Image placeholders:** 1 landscape banner + 2 smaller photos
+
+---
+
+### ✏️ Sample Report (Template 2 – Impact Visual)
+
+**Our Climate Story:**
+Since launching in 2019, SolarX has helped 400+ schools cut 1,200 tCO₂e. 68% of our HQ energy is solar-sourced.
+
+**People & Inclusion:**
+54% of staff are women. In 2023, all employees received DEI training and mental wellness benefits.
+
+**Looking Forward:**
+
+* Launch Asia pilot by 2025
+* Publish Scope 3 inventory
+* Achieve net-zero by 2040
+
+---
+
+## ✅ Template 3: **ESG Strategy and Targets Brief**
+
+**Ideal for:** ESG consultants, B2B proposals, banks, SMEs
+**Design:** Structured sections with clear headers + chart blocks
+
+### 🔹 Page 1
+
+* **Sustainability Strategy** (1–2 paragraphs)
+* **Governance Model** – chart of roles/responsibilities
+* **Risks & Opportunities Summary Table**
+
+### 🔹 Page 2
+
+* **Climate Targets Timeline** (e.g. bar or line chart)
+* **KPIs & Metrics Table**
+* **Material Topics Matrix (visual placeholder)**
+
+---
+
+### ✏️ Sample Report (Template 3 – Strategic Brief)
+
+**Strategy:**
+EcoWare’s ESG program focuses on circular design, supplier traceability, and emissions reduction in packaging. We conduct annual risk mapping tied to material topics and TCFD guidance.
+
+**Governance:**
+
+* ESG Committee: Monthly reviews
+* CFO: Climate scenario planning
+
+**Climate Targets:**
+
+* -30% Scope 1 & 2 by 2027
+* Full LCAs for all products by 2026
+
+**Top Material Topics:**
+
+* Climate resilience
+* Supplier human rights
+* Packaging footprint

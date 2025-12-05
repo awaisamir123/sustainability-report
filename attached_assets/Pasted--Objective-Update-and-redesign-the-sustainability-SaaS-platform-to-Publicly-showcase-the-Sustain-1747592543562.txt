@@ -1,0 +1,204 @@
+🧠 Objective
+Update and redesign the sustainability SaaS platform to:
+
+Publicly showcase the Sustainability Report Generator as the platform's core value.
+
+Allow non-authenticated access to key landing pages and educational content for visibility.
+
+Provide authenticated and monetized access to specialized tools and services.
+
+Implement admin controls for pricing, user management, and analytics.
+
+Improve overall UI/UX (especially styling of top profile button and module visibility).
+
+Build informational landing pages for each module, featuring clear descriptions, access prompts, and optional consultancy links.
+
+📌 Feature Set & Development Tasks
+1. 🔧 Update Top Right Profile Button Style
+Current: Basic button with text/icon.
+
+Target Style:
+
+Circular avatar with dropdown menu
+
+Add soft shadow, border on hover
+
+Dropdown includes: Profile, Settings, Logout
+
+Tailwind or CSS-in-JS styling preferred
+
+2. 🧭 Home Page & Public Access to Key Features
+Allow all visitors (signed-in or not) to:
+
+Access Sustainability Report Generator module
+
+Access Blog
+
+View landing pages of all modules
+
+Update Landing Page Structure:
+
+Main CTA: “Start Your Sustainability Journey – Generate Your First Report Free”
+
+Secondary CTA: “Explore Modules →”
+
+Highlight Section: “Why Choose Us?”
+
+Supports GRI, IFRS S1 & S2, ESRS, CDP, SASB, ISO 14067, TCFD
+
+Ready-made templates for SMEs, Corporates, Manufacturers, Consultants
+
+Editable WYSIWYG report builder
+
+Exports to DOCX and PDF
+
+Report Generator Module Homepage Content:
+
+Visual template gallery (4–5 styles)
+
+Button: “Edit & Generate Report”
+
+Button: “Download as PDF / Word”
+
+Route: /generate-report → Template picker → Editor → Export
+
+3. 📚 Landing Pages for Each Module
+Each module must have a public landing page with:
+
+Module name and description
+
+Benefits of using the module
+
+Sample images/charts
+
+Supported standards/frameworks (if applicable)
+
+Action buttons:
+
+“Sign up to Use”
+
+“Request Consultation” (integrate Calendly)
+
+“Make Payment” (use Stripe/PayPal placeholder)
+
+Example (for PCF Calculator):
+diff
+Copy
+Edit
+Page Title: Product Carbon Footprint Calculator
+Content: 
+- Helps you estimate carbon emissions from raw materials to finished product
+- Based on ISO 14067, GHG Protocol Product Standard
+- Supports transportation, energy, material inputs
+
+Buttons:
+- “View Demo”
+- “Sign up & Pay to Use”
+- “Book Consultation” (Calendly embed)
+🔁 Replicate this format for:
+
+GHG Calculator
+
+ESG Rating Calculator
+
+Benchmarking
+
+Compliance & Certification
+
+Materiality Assessment
+
+4. 🧭 Update Left Sidebar Navigation
+Replace with the following structure:
+
+sql
+Copy
+Edit
+- Sustainability Report Generator (Free)
+- Dashboard (Paid, Auth only)
+- GHG Emission Calculator (View page free, usage paid)
+- Product Carbon Footprint Calculator (View page free, usage paid)
+- Materiality Assessment (Landing free, consultancy required)
+- ESG Rating Calculator (Landing free, usage paid)
+- Benchmarking (Landing free, consultancy required)
+- Compliance & Certification (Landing free, consultancy required)
+- Blog (Free)
+- Settings (Auth only)
+Add lock icon or badge beside paid/consultation modules.
+
+5. 🔐 Admin Panel (Authenticated via role-based access)
+Admin capabilities:
+
+View all registered users and their usage history
+
+Track purchases/subscriptions
+
+Add/update service pricing (CRUD interface for pricing per module)
+
+Toggle modules on/off for specific users
+
+Add blog posts, framework pages
+
+View usage analytics dashboard:
+
+Total users
+
+Most used modules
+
+Revenue per module
+
+Heatmap of visits and engagement
+
+6. 📖 Reporting Framework Pages (New Section)
+Create dedicated subpages with descriptions and CTA buttons for each framework:
+
+GRI
+
+ESRS
+
+IFRS S1 & S2
+
+SASB
+
+TCFD
+
+ISO 14067
+
+CDP
+
+Each page includes:
+
+Summary of the standard (2–3 paragraphs)
+
+List of supported metrics in this platform
+
+Sample report snippet (embed image/PDF viewer)
+
+Button: “Use This Template” → Links to /generate-report pre-loaded with that framework's structure
+
+7. 🚦 Access Control & Permissions Matrix
+Module	Landing Page Access	Use Tool / Service	Action Required
+Report Generator	Public	Public (free)	None
+Dashboard	Auth only	Auth only	Signup
+GHG Emission Calculator	Public	Restricted	Signup + Payment
+PCF Calculator	Public	Restricted	Signup + Payment
+Materiality Assessment	Public	Restricted	Signup + Book via Calendly
+ESG Rating Calculator	Public	Restricted	Signup + Payment
+Benchmarking	Public	Restricted	Signup + Book Consultation
+Compliance & Certification	Public	Restricted	Signup + Book Consultation
+Blog	Public	Public	None
+Settings	Auth only	Auth only	None
+
+📦 Deliverables
+New navigation layout with conditional access
+
+Public landing pages for all modules
+
+Integrated Calendly for consultation-based modules
+
+Pricing logic and payment hooks for transactional tools
+
+Report Generator module (with editor, template picker, export)
+
+Admin Dashboard with analytics, CRUD for pricing/users
+
+Framework info pages with CTA integration

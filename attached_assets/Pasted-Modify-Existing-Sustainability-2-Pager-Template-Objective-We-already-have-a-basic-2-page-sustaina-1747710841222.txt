@@ -1,0 +1,94 @@
+Modify Existing Sustainability 2-Pager Template
+🟩 Objective
+We already have a basic 2-page sustainability summary template implemented in the app. The goal now is to enhance and restructure that template into a more professional and standards-aligned Sustainability Statement Builder, offering multiple layouts with editable fields, improved UI, export options, and visual placeholders.
+
+🛠️ Tasks to Modify the Existing Template
+1. Refactor Template into 3 Options
+Transform the current static template into a multi-option module where users can choose from:
+
+Corporate Snapshot Summary
+
+Visual Impact Report
+
+ESG Strategy & Targets Brief
+
+Each template should maintain a consistent layout across 2 pages but with different content blocks, styles, and visual design as described below.
+
+2. Update Template Content Blocks
+Each option should have editable blocks with these updates:
+
+Corporate Snapshot
+
+Page 1: Company Logo, Tagline, About Us, Sustainability Vision, SDG Icons, Image
+
+Page 2: ESG Metrics Table (climate, social, governance) with columns for 2023 and 2022
+
+Visual Impact Report
+
+Page 1: Quadrant layout for Climate, People, Governance, and Targets
+
+Page 2: “Our Journey”, “Looking Ahead” (timeline), “Commitments”, and 3 image slots
+
+ESG Strategy Brief
+
+Page 1: Strategy narrative, Governance structure chart, Risks/Opportunities table
+
+Page 2: Climate targets timeline (bar/line chart), KPI Table, Material Topics grid
+
+Use placeholder text and images in each template so users can easily preview the layout.
+
+3. Add Editor Fields for User Input
+Add sidebar or modal for:
+
+Company Name, Logo Upload
+
+Year of Report
+
+Paragraph fields with word limits
+
+Data entry tables with rows and metrics
+
+Upload slots for 2–3 images
+
+Dropdown for selecting SDGs
+
+Each section should include tooltips or short guidance for the user on what to enter.
+
+4. Enable Live Preview with Styling
+Show a two-page preview panel
+
+Render with consistent styles using Tailwind CSS
+
+Use:
+
+Rounded sections
+
+Light shadows
+
+Clean fonts
+
+Icons for SDGs, charts, and labels
+
+5. Export Options
+Ensure full compatibility with:
+
+PDF Export via html2pdf or jsPDF
+
+Word Export via docx.js
+Include proper formatting for tables, headers, and logo alignment.
+
+6. Access Requirements
+This module should remain publicly accessible without login.
+
+Saved reports can be offered as downloads (no need to persist on DB).
+
+✅ Deliverables
+Updated template with 3 selectable layouts
+
+All input fields editable via UI
+
+Fully styled live preview
+
+Export functionality working (PDF and Word)
+
+Clean, modern, responsive design

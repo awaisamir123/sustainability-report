@@ -1,0 +1,1202 @@
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle,
+  CardDescription,
+  CardFooter
+} from '@/components/ui/card';
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from '@/components/ui/tabs';
+import { 
+  ChevronLeft, 
+  Save, 
+  Download, 
+  Eye, 
+  FileText, 
+  BarChart4, 
+  Table, 
+  Edit3,
+  HelpCircle,
+  Plus,
+  Trash2,
+  Check,
+  AlertTriangle,
+  ExternalLink,
+  Info
+} from 'lucide-react';
+import { ReportTemplate } from './TemplateSelection';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { TemplateVisuals } from './EnhancedTemplates';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
+import { Link } from "wouter";
+import { toast } from 'sonner';
+
+interface ReportEditorProps {
+  template: ReportTemplate;
+  onBack: () => void;
+  onSave: (data: any) => void;
+  onExport: (format: 'pdf' | 'docx' | 'csv') => void;
+}
+
+// Helper component for GRI disclosure guidance
+const GuidanceTooltip = ({ content }: { content: string }) => (
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-5 w-5 text-muted-foreground hover:text-foreground">
+          <HelpCircle className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-sm">
+        <p className="text-xs">{content}</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+);
+
+// Helper type for material topics
+interface MaterialTopic {
+  id: string;
+  name: string;
+  description: string;
+  impacts: string;
+  policies: string;
+  actions: string;
+  tracking: string;
+  stakeholderFeedback: string;
+  targets: string;
+}
+
+export function ReportEditor({ template, onBack, onSave, onExport }: ReportEditorProps) {
+  const [activeTab, setActiveTab] = useState('edit');
+  const [materialTopics, setMaterialTopics] = useState<MaterialTopic[]>([]);
+  const [showGHGHelpDialog, setShowGHGHelpDialog] = useState(false);
+
+  // Initialize reportData with default fields and dynamic section fields
+  const [reportData, setReportData] = useState<Record<string, string>>(() => {
+    // Create the base report data
+    const data: Record<string, string> = {
+      title: `${template.title} - Annual Report`,
+      organizationName: '',
+      reportingPeriod: `January 1 - December 31, ${new Date().getFullYear() - 1}`,
+      executiveSummary: '',
+      // Special fields for GRI Universal Standards 2021
+      statementOfUse: template.id === 'gri-universal-2021' 
+        ? `[Organization name] has reported in accordance with the GRI Standards for the period [reporting period].` 
+        : '',
+      // GRI 2 fields: Organization & Reporting Practices
+      gri2_1_orgDetails: '',
+      gri2_2_entities: '',  
+      gri2_3_reportingInfo: '',
+      gri2_4_restatements: '',
+      gri2_5_assurance: '',
+      // GRI 2 fields: Activities & Workers
+      gri2_6_activities: '',
+      gri2_7_employees: '',
+      gri2_8_nonEmployees: '',
+      // GRI 2 fields: Governance
+      gri2_9_governance: '',
+      gri2_10_nomination: '',
+      gri2_11_chair: '',
+      gri2_12_impacts: '',
+      gri2_13_delegation: '',
+      gri2_14_sustainabilityRole: '',
+      gri2_15_conflicts: '',
+      gri2_16_criticalConcerns: '',
+      gri2_17_knowledge: '',
+      gri2_18_evaluation: '',
+      gri2_19_remuneration: '',
+      gri2_20_remunerationProcess: '',
+      gri2_21_compensationRatio: '',
+      // GRI 2 fields: Strategy, Policies & Practices
+      gri2_22_strategy: '',
+      gri2_23_policyCommitments: '',
+      gri2_24_embeddingPolicy: '',
+      gri2_25_remediationProcesses: '',
+      gri2_26_mechanisms: '',
+      gri2_27_compliance: '',
+      gri2_28_associations: '',
+      // GRI 2 fields: Stakeholder Engagement
+      gri2_29_approach: '',
+      gri2_30_collectiveBargaining: '',
+      // GRI 3 fields: Material Topics
+      gri3_1_process: '',
+      gri3_2_list: '',
+      // Standard metrics for all reports
+      scope1Emissions: '',
+      scope2Emissions: '',
+      scope3Emissions: '',
+      energyConsumption: '',
+      waterConsumption: '',
+      wasteGeneration: '',
+      otherEnvironmentalImpacts: '',
+      socialInitiatives: '',
+      governanceStructure: '',
+      futureCommitments: '',
+    };
+
+    // Add fields for each section and subsection
+    template.sections.forEach((section, sectionIndex) => {
+      data[`section_${sectionIndex}`] = '';
+
+      if (section.subsections) {
+        section.subsections.forEach((_, subIndex) => {
+          data[`section_${sectionIndex}_sub_${subIndex}`] = '';
+        });
+      }
+    });
+
+    return data;
+  });
+
+  // Add one blank material topic by default if this is a GRI 2021 report
+  useEffect(() => {
+    if (template.id === 'gri-universal-2021' && materialTopics.length === 0) {
+      setMaterialTopics([{
+        id: `topic_${Date.now()}`,
+        name: '',
+        description: '',
+        impacts: '',
+        policies: '',
+        actions: '',
+        tracking: '',
+        stakeholderFeedback: '',
+        targets: ''
+      }]);
+    }
+  }, [template.id]);
+
+  // Update the handlers to ensure preview reflects the changes
+  const handleInputChange = (field: string, value: string) => {
+    console.log(`Updating field ${field} with value: ${value}`);
+    setReportData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // Update material topics data in report data for preview
+  useEffect(() => {
+    if (materialTopics.length > 0) {
+      const materialsData = JSON.stringify(materialTopics);
+      setReportData(prev => ({
+        ...prev,
+        materialTopicsData: materialsData
+      }));
+    }
+  }, [materialTopics]);
+
+  const handleSave = () => {
+    onSave(reportData);
+  };
+
+  const handleExport = async (format: 'pdf' | 'docx' | 'csv') => {
+    try {
+      console.log(`Exporting report as ${format}`);
+      console.log('Report data:', reportData);
+      const response = await fetch(`/api/reports/export?format=${format}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData)
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+  
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `report.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+  
+      toast({
+        title: 'Success',
+        description: `Report has been exported as ${format.toUpperCase()}.`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to export report. Please try again.',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <Button variant="ghost" onClick={onBack} className="gap-1">
+          <ChevronLeft className="h-4 w-4" />
+          Back to Templates
+        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleSave} className="gap-1">
+            <Save className="h-4 w-4" />
+            Save Draft
+          </Button>
+          <Button onClick={() => handleExport('pdf')} className="gap-1">
+            <Download className="h-4 w-4" />
+            Export as PDF
+          </Button>
+          <Button variant="outline" onClick={() => handleExport('docx')} className="gap-1">
+            <FileText className="h-4 w-4" />
+            Export as Word
+          </Button>
+          <Button variant="outline" onClick={() => handleExport('csv')} className="gap-1">
+            <Table className="h-4 w-4" />
+            Export as CSV
+          </Button>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{template.title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* GHG Help Dialog */}
+          <Dialog open={showGHGHelpDialog} onOpenChange={setShowGHGHelpDialog}>
+            <DialogContent className="sm:max-w-[550px] w-full max-w-[90vw]">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Info className="h-5 w-5 text-primary" />
+                  Need help with accurate emissions data?
+                </DialogTitle>
+                <DialogDescription>
+                  Measuring and reporting greenhouse gas emissions requires specialized expertise and tools.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4 py-3">
+                <Alert className="bg-primary/5 border-primary/20">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTitle>Professional GHG accounting is available</AlertTitle>
+                  <AlertDescription className="text-sm">
+                    For accurate emissions calculations following the GHG Protocol Corporate Standard,
+                    consider our professional services:
+                  </AlertDescription>
+                </Alert>
+
+                <div className="grid gap-3">
+                  <div className="flex items-start space-x-3 rounded-md border p-3">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium">GHG Protocol Standard Tool</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Comprehensive emissions calculator with activity data tracking, emission factors,
+                        and automatic calculations for all scopes. 
+                      </p>
+                    </div>
+                    <div className="text-xs font-medium text-primary whitespace-nowrap">$99</div>
+                  </div>
+
+                  <div className="flex items-start space-x-3 rounded-md border p-3">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium">Consultation Services</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Expert guidance on emissions data collection, calculation methods, and reporting
+                        from certified sustainability professionals.
+                      </p>
+                    </div>
+                    <div className="text-xs font-medium whitespace-nowrap">Book a call</div>
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="flex flex-col sm:flex-row gap-2">
+                <Button variant="outline" className="w-full sm:w-auto" onClick={() => setShowGHGHelpDialog(false)}>
+                  Continue to Data Entry
+                </Button>
+                <Button className="w-full sm:w-auto" asChild>
+                  <Link href="/data-input">
+                    <span className="flex items-center gap-1">
+                      Explore GHG Protocol Tool <ExternalLink className="h-3 w-3 ml-1" />
+                    </span>
+                  </Link>
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Tabs value={activeTab} onValueChange={(value) => {
+            if (value === 'data' && activeTab !== 'data') {
+              // Show help dialog when switching to data tab for the first time
+              setShowGHGHelpDialog(true);
+            }
+            setActiveTab(value);
+          }} className="w-full">
+            <TabsList className="grid grid-cols-3 mb-6">
+              <TabsTrigger value="edit" className="gap-2">
+                <Edit3 className="h-4 w-4" />
+                Edit Content
+              </TabsTrigger>
+              <TabsTrigger value="data" className="gap-2">
+                <BarChart4 className="h-4 w-4" />
+                Data & Metrics
+              </TabsTrigger>
+              <TabsTrigger value="preview" className="gap-2">
+                <Eye className="h-4 w-4" />
+                Preview
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="edit" className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="title">Report Title</Label>
+                  <Input 
+                    id="title"
+                    value={reportData.title} 
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="organizationName">Organization Name</Label>
+                  <Input 
+                    id="organizationName"
+                    value={reportData.organizationName} 
+                    onChange={(e) => handleInputChange('organizationName', e.target.value)}
+                    placeholder="Enter your organization's name"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="reportingPeriod">Reporting Period</Label>
+                  <Input 
+                    id="reportingPeriod"
+                    value={reportData.reportingPeriod} 
+                    onChange={(e) => handleInputChange('reportingPeriod', e.target.value)}
+                  />
+                </div>
+
+                {/* Special interface for GRI Universal Standards 2021 */}
+                {template.id === 'gri-universal-2021' ? (
+                  <div className="border rounded-md p-4 mt-6">
+                    <h3 className="text-lg font-medium mb-4">GRI Universal Standards 2021</h3>
+
+                    {/* Statement of Use */}
+                    <div className="mb-6 p-4 bg-muted/10 rounded-md">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="text-md font-semibold">Statement of Use</h4>
+                        <GuidanceTooltip content="Organizations reporting in accordance with the GRI Standards must include this statement of use." />
+                      </div>
+                      <Textarea
+                        rows={2}
+                        value={reportData.statementOfUse}
+                        onChange={(e) => handleInputChange('statementOfUse', e.target.value)}
+                        placeholder="[Organization name] has reported in accordance with the GRI Standards for the period [reporting period]."
+                      />
+                    </div>
+
+                    {/* GRI 2: General Disclosures */}
+                    <Accordion type="single" collapsible className="mb-6">
+                      <AccordionItem value="gri2">
+                        <AccordionTrigger className="text-md font-semibold text-teal-700">
+                          GRI 2: General Disclosures
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          {/* GRI 2-1 to 2-5: Organization & Reporting Practices */}
+                          <div className="p-3 mb-4 rounded-md bg-muted/5 border">
+                            <h5 className="text-sm font-semibold mb-3">Organization & Reporting Practices</h5>
+
+                            <div className="space-y-4 mb-4">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_1_orgDetails" className="text-sm">GRI 2-1: Organizational details</Label>
+                                  <GuidanceTooltip content="Legal name, ownership, location of headquarters." />
+                                </div>
+                                <Textarea
+                                  id="gri2_1_orgDetails"
+                                  rows={2}
+                                  value={reportData.gri2_1_orgDetails}
+                                  onChange={(e) => handleInputChange('gri2_1_orgDetails', e.target.value)}
+                                  placeholder="E.g., ABC Corporation, publicly listed company, headquartered in London, UK."
+                                />
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_2_entities" className="text-sm">GRI 2-2: Entities included in sustainability reporting</Label>
+                                  <GuidanceTooltip content="List all entities included in the organization's sustainability reporting." />
+                                </div>
+                                <Textarea
+                                  id="gri2_2_entities"
+                                  rows={2}
+                                  value={reportData.gri2_2_entities}
+                                  onChange={(e) => handleInputChange('gri2_2_entities', e.target.value)}
+                                  placeholder="E.g., This report covers ABC Corporation and all of its subsidiaries: ABC Manufacturing, ABC Services, and ABC Distribution."
+                                />
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_3_reportingInfo" className="text-sm">GRI 2-3: Reporting period, frequency and contact point</Label>
+                                  <GuidanceTooltip content="Specify the reporting period, frequency of reporting, and contact person for questions." />
+                                </div>
+                                <Textarea
+                                  id="gri2_3_reportingInfo"
+                                  rows={2}
+                                  value={reportData.gri2_3_reportingInfo}
+                                  onChange={(e) => handleInputChange('gri2_3_reportingInfo', e.target.value)}
+                                  placeholder="E.g., This report covers January 1 to December 31, 2023. We report annually. For questions: sustainability@abccorp.com"
+                                />
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_4_restatements" className="text-sm">GRI 2-4: Restatements of information</Label>
+                                  <GuidanceTooltip content="Report any restatements of information from previous reporting periods." />
+                                </div>
+                                <Textarea
+                                  id="gri2_4_restatements"
+                                  rows={2}
+                                  value={reportData.gri2_4_restatements}
+                                  onChange={(e) => handleInputChange('gri2_4_restatements', e.target.value)}
+                                  placeholder="E.g., Water consumption data for 2022 has been restated due to improved measurement methods."
+                                />
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_5_assurance" className="text-sm">GRI 2-5: External assurance</Label>
+                                  <GuidanceTooltip content="Describe the organization's policy and practice for seeking external assurance." />
+                                </div>
+                                <Textarea
+                                  id="gri2_5_assurance"
+                                  rows={2}
+                                  value={reportData.gri2_5_assurance}
+                                  onChange={(e) => handleInputChange('gri2_5_assurance', e.target.value)}
+                                  placeholder="E.g., This report has been externally assured by XYZ Assurance Services. The assurance covered all material disclosures."
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* GRI 2-6 to 2-8: Activities & Workers */}
+                          <div className="p-3 mb-4 rounded-md bg-muted/5 border">
+                            <h5 className="text-sm font-semibold mb-3">Activities & Workers</h5>
+
+                            <div className="space-y-4 mb-4">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_6_activities" className="text-sm">GRI 2-6: Activities, value chain and other business relationships</Label>
+                                  <GuidanceTooltip content="Describe the organization's activities, value chain, and significant business relationships." />
+                                </div>
+                                <Textarea
+                                  id="gri2_6_activities"
+                                  rows={3}
+                                  value={reportData.gri2_6_activities}
+                                  onChange={(e) => handleInputChange('gri2_6_activities', e.target.value)}
+                                  placeholder="E.g., ABC Corporation manufactures and sells electronics products globally. Our value chain includes component suppliers in Asia, manufacturing in Europe and North America, and retail distribution worldwide."
+                                />
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_7_employees" className="text-sm">GRI 2-7: Employees</Label>
+                                  <GuidanceTooltip content="Report total number of employees and breakdown by gender, region, and employment type." />
+                                </div>
+                                <Textarea
+                                  id="gri2_7_employees"
+                                  rows={3}
+                                  value={reportData.gri2_7_employees}
+                                  onChange={(e) => handleInputChange('gri2_7_employees', e.target.value)}
+                                  placeholder="E.g., Total employees: 5,200. Gender breakdown: 55% male, 45% female. Regional breakdown: 40% Europe, 30% North America, 20% Asia, 10% other regions."
+                                />
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Label htmlFor="gri2_8_nonEmployees" className="text-sm">GRI 2-8: Workers who are not employees</Label>
+                                  <GuidanceTooltip content="Report information about workers who are not employees but whose work is controlled by the organization." />
+                                </div>
+                                <Textarea
+                                  id="gri2_8_nonEmployees"
+                                  rows={2}
+                                  value={reportData.gri2_8_nonEmployees}
+                                  onChange={(e) => handleInputChange('gri2_8_nonEmployees', e.target.value)}
+                                  placeholder="E.g., 850 contractors are engaged in manufacturing, IT services, and facilities management."
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Additional GRI 2 sections can be added here in the same format */}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+
+                    {/* GRI 3: Material Topics */}
+                    <Accordion type="single" collapsible className="mb-6">
+                      <AccordionItem value="gri3">
+                        <AccordionTrigger className="text-md font-semibold text-teal-700">
+                          GRI 3: Material Topics
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          {/* GRI 3-1: Process to determine material topics */}
+                          <div className="mb-4">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Label htmlFor="gri3_1_process" className="text-sm">GRI 3-1: Process to determine material topics</Label>
+                              <GuidanceTooltip content="Describe the process followed to determine material topics, including stakeholder engagement methods." />
+                            </div>
+                            <Textarea
+                              id="gri3_1_process"
+                              rows={4}
+                              value={reportData.gri3_1_process}
+                              onChange={(e) => handleInputChange('gri3_1_process', e.target.value)}
+                              placeholder="E.g., We conducted a materiality assessment involving internal workshops, stakeholder surveys, and industry benchmarking. The process included identifying potential topics, assessing their significance, and prioritizing them based on stakeholder concerns and business impact."
+                            />
+                          </div>
+
+                          {/* GRI 3-2: List of material topics */}
+                          <div className="mb-4">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Label htmlFor="gri3_2_list" className="text-sm">GRI 3-2: List of material topics</Label>
+                              <GuidanceTooltip content="List all material topics identified, including any changes compared to the previous reporting period." />
+                            </div>
+                            <Textarea
+                              id="gri3_2_list"
+                              rows={3}
+                              value={reportData.gri3_2_list}
+                              onChange={(e) => handleInputChange('gri3_2_list', e.target.value)}
+                              placeholder="E.g., Our material topics are: Climate change and emissions, Water stewardship, Waste management, Employee health and safety, Diversity and inclusion, Data privacy and security, Ethical business practices."
+                            />
+                          </div>
+
+                          {/* GRI 3-3: Management of material topics */}
+                          <div className="mb-4">
+                            <div className="flex justify-between items-center mb-3">
+                              <h5 className="text-sm font-semibold">GRI 3-3: Management of material topics</h5>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="h-8 gap-1 text-xs"
+                                onClick={() => setMaterialTopics([
+                                  ...materialTopics, 
+                                  {
+                                    id: `topic_${Date.now()}`,
+                                    name: '',
+                                    description: '',
+                                    impacts: '',
+                                    policies: '',
+                                    actions: '',
+                                    tracking: '',
+                                    stakeholderFeedback: '',
+                                    targets: ''
+                                  }
+                                ])}
+                              >
+                                <Plus className="h-3 w-3" />
+                                Add Material Topic
+                              </Button>
+                            </div>
+
+                            {materialTopics.map((topic, index) => (
+                              <div key={topic.id} className="mb-4 p-3 border rounded-md bg-muted/5">
+                                <div className="flex justify-between items-center mb-3">
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`topic_${index}_name`} className="text-sm font-medium">Material Topic {index + 1}</Label>
+                                    <GuidanceTooltip content="For each material topic, describe its impacts, your policies, actions taken, and how you track effectiveness." />
+                                  </div>
+
+                                  {materialTopics.length > 1 && (
+                                    <Button 
+                                      variant="ghost" 
+                                      size="icon" 
+                                      className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                                      onClick={() => setMaterialTopics(materialTopics.filter(t => t.id !== topic.id))}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+
+                                <div className="space-y-3">
+                                  <div>
+                                    <Input 
+                                      id={`topic_${index}_name`}
+                                      value={topic.name}
+                                      onChange={(e) => {
+                                        const updated = [...materialTopics];
+                                        updated[index] = {...topic, name: e.target.value};
+                                        setMaterialTopics(updated);
+                                      }}
+                                      placeholder="Topic name (e.g., Climate Change)"
+                                      className="mb-2"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor={`topic_${index}_description`} className="text-xs">Description</Label>
+                                    <Textarea
+                                      id={`topic_${index}_description`}
+                                      rows={2}
+                                      value={topic.description}
+                                      onChange={(e) => {
+                                        const updated = [...materialTopics];
+                                        updated[index] = {...topic, description: e.target.value};
+                                        setMaterialTopics(updated);
+                                      }}
+                                      placeholder="Brief description of this material topic"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor={`topic_${index}_impacts`} className="text-xs">Actual and potential impacts</Label>
+                                    <Textarea
+                                      id={`topic_${index}_impacts`}
+                                      rows={2}
+                                      value={topic.impacts}
+                                      onChange={(e) => {
+                                        const updated = [...materialTopics];
+                                        updated[index] = {...topic, impacts: e.target.value};
+                                        setMaterialTopics(updated);
+                                      }}
+                                      placeholder="Describe the actual and potential impacts on the economy, environment, and people"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor={`topic_${index}_policies`} className="text-xs">Policies and commitments</Label>
+                                    <Textarea
+                                      id={`topic_${index}_policies`}
+                                      rows={2}
+                                      value={topic.policies}
+                                      onChange={(e) => {
+                                        const updated = [...materialTopics];
+                                        updated[index] = {...topic, policies: e.target.value};
+                                        setMaterialTopics(updated);
+                                      }}
+                                      placeholder="Describe the policies and commitments related to this topic"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor={`topic_${index}_actions`} className="text-xs">Actions taken</Label>
+                                    <Textarea
+                                      id={`topic_${index}_actions`}
+                                      rows={2}
+                                      value={topic.actions}
+                                      onChange={(e) => {
+                                        const updated = [...materialTopics];
+                                        updated[index] = {...topic, actions: e.target.value};
+                                        setMaterialTopics(updated);
+                                      }}
+                                      placeholder="Describe the actions taken to manage the topic and related impacts"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor={`topic_${index}_tracking`} className="text-xs">Tracking effectiveness</Label>
+                                    <Textarea
+                                      id={`topic_${index}_tracking`}
+                                      rows={2}
+                                      value={topic.tracking}
+                                      onChange={(e) => {
+                                        const updated = [...materialTopics];
+                                        updated[index] = {...topic, tracking: e.target.value};
+                                        setMaterialTopics(updated);
+                                      }}
+                                      placeholder="Describe how you track the effectiveness of actions taken"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor={`topic_${index}_targets`} className="text-xs">Targets and goals</Label>
+                                    <Textarea
+                                      id={`topic_${index}_targets`}
+                                      rows={2}
+                                      value={topic.targets}
+                                      onChange={(e) => {
+                                        const updated = [...materialTopics];
+                                        updated[index] = {...topic, targets: e.target.value};
+                                        setMaterialTopics(updated);
+                                      }}
+                                      placeholder="Describe any targets or goals set for this topic"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+
+                    {/* Topic-Specific Standards */}
+                    <Accordion type="single" collapsible className="mb-6">
+                      <AccordionItem value="topicStandards">
+                        <AccordionTrigger className="text-md font-semibold text-teal-700">
+                          Topic-Specific Standards (200, 300, 400 Series)
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="p-3 rounded-md mb-4 bg-muted/10">
+                            <p className="text-sm text-muted-foreground mb-2">
+                              For each material topic identified, select and report on the relevant topic-specific disclosures from the GRI Standards 200, 300, and 400 series.
+                            </p>
+
+                            <div className="space-y-4">
+                              {materialTopics.length > 0 ? (
+                                materialTopics.map((topic, index) => (
+                                  <div key={`topic_standards_${topic.id}`} className="p-3 border rounded-md">
+                                    <h5 className="text-sm font-medium mb-2">{topic.name || `Material Topic ${index + 1}`}</h5>
+                                    <p className="text-xs text-muted-foreground mb-2">
+                                      Select the appropriate GRI topic-specific standards that apply to this material topic and report on the required disclosures.
+                                    </p>
+                                    <div className="flex items-center gap-2 text-xs text-muted-foreground p-2 bg-muted/20 rounded">
+                                      <Check className="h-4 w-4 text-primary" />
+                                      For a complete implementation, you would select from a list of applicable standards here.
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="text-center p-4 text-muted-foreground text-sm">
+                                  Please add material topics in the section above to report on topic-specific standards.
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+
+                    {/* GRI Content Index */}
+                    <div className="p-4 rounded-md bg-muted/10 mb-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="text-md font-semibold">GRI Content Index</h4>
+                        <GuidanceTooltip content="A GRI content index specifies each of the GRI Standards used and lists all disclosures reported." />
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        The GRI content index will be automatically generated from your report, showing all standards and disclosures used, with corresponding page numbers or URLs.
+                      </p>
+                      ```text
+      <div className="p-3 border rounded-md bg-muted/5">
+                        <p className="text-xs text-center text-muted-foreground">
+                          Preview of GRI Content Index will appear here when you generate the final report.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Default interface for other templates
+                  <div className="border rounded-md p-4 mt-6">
+                    <h3 className="text-lg font-medium mb-4">Report Sections</h3>
+                    <div className="space-y-8">
+                      {template.sections.map((section, sectionIndex) => (
+                        <div key={sectionIndex} className="space-y-4 border-b pb-6 last:border-0">
+                          <h4 className="text-md font-semibold flex items-center">
+                            <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+                            {section.title}
+                          </h4>
+                          {section.content && (
+                            <div>
+                              <Textarea
+                                rows={3}
+                                value={reportData[`section_${sectionIndex}`] || ''}
+                                onChange={(e) => handleInputChange(`section_${sectionIndex}`, e.target.value)}
+                                placeholder={section.content}
+                              />
+                            </div>
+                          )}
+
+                          {section.subsections && section.subsections.length > 0 && (
+                            <div className="pl-5 space-y-4 mt-4 border-l">
+                              {section.subsections.map((subsection, subIndex) => (
+                                <div key={subIndex} className="space-y-2">
+                                  <h5 className="text-sm font-medium">{subsection.title}</h5>
+                                  <Textarea
+                                    rows={2}
+                                    value={reportData[`section_${sectionIndex}_sub_${subIndex}`] || ''}
+                                    onChange={(e) => handleInputChange(`section_${sectionIndex}_sub_${subIndex}`, e.target.value)}
+                                    placeholder={subsection.content}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="data" className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="scope1Emissions">Scope 1 Emissions (tCO2e)</Label>
+                  <Input 
+                    id="scope1Emissions"
+                    type="text"
+                    value={reportData.scope1Emissions} 
+                    onChange={(e) => handleInputChange('scope1Emissions', e.target.value)}
+                    placeholder="Direct emissions from owned or controlled sources"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="scope2Emissions">Scope 2 Emissions (tCO2e)</Label>
+                  <Input 
+                    id="scope2Emissions"
+                    type="text"
+                    value={reportData.scope2Emissions} 
+                    onChange={(e) => handleInputChange('scope2Emissions', e.target.value)}
+                    placeholder="Indirect emissions from purchased electricity, heat, or steam"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="scope3Emissions">Scope 3 Emissions (tCO2e)</Label>
+                  <Input 
+                    id="scope3Emissions"
+                    type="text"
+                    value={reportData.scope3Emissions} 
+                    onChange={(e) => handleInputChange('scope3Emissions', e.target.value)}
+                    placeholder="All other indirect emissions in the value chain"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="energyConsumption">Energy Consumption (MWh)</Label>
+                  <Input 
+                    id="energyConsumption"
+                    type="text"
+                    value={reportData.energyConsumption} 
+                    onChange={(e) => handleInputChange('energyConsumption', e.target.value)}
+                    placeholder="Total energy consumption"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="waterConsumption">Water Consumption (m³)</Label>
+                  <Input 
+                    id="waterConsumption"
+                    type="text"
+                    value={reportData.waterConsumption} 
+                    onChange={(e) => handleInputChange('waterConsumption', e.target.value)}
+                    placeholder="Total water consumption"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="wasteGeneration">Waste Generation (tonnes)</Label>
+                  <Input 
+                    id="wasteGeneration"
+                    type="text"
+                    value={reportData.wasteGeneration} 
+                    onChange={(e) => handleInputChange('wasteGeneration', e.target.value)}
+                    placeholder="Total waste generation"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="otherEnvironmentalImpacts">Other Environmental Impacts</Label>
+                  <Textarea 
+                    id="otherEnvironmentalImpacts"
+                    rows={4}
+                    value={reportData.otherEnvironmentalImpacts} 
+                    onChange={(e) => handleInputChange('otherEnvironmentalImpacts', e.target.value)}
+                    placeholder="Describe other environmental impacts and initiatives"
+                  />
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="preview" className="p-6 border rounded-md min-h-[600px]">
+              <div className="max-w-4xl mx-auto space-y-8" style={template.color ? { borderLeft: `4px solid ${template.color}`, paddingLeft: '1.5rem' } : {}}>
+                <div className="text-center">
+                  <h1 className="text-3xl font-bold">{reportData.title}</h1>
+                  <p className="text-lg mt-2">{reportData.organizationName || '[Organization Name]'}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Reporting Period: {reportData.reportingPeriod}</p>
+                </div>
+
+                {/* GRI Universal Standards 2021 preview */}
+                {template.id === 'gri-universal-2021' ? (
+                  <>
+                    {/* Statement of Use */}
+                    <div>
+                      <h2 className="text-2xl font-semibold mb-4 text-teal-700">Statement of Use</h2>
+                      <div className="p-4 bg-muted/5 rounded-md">
+                        <p className="whitespace-pre-line">{reportData.statementOfUse || 'Statement of use will appear here.'}</p>
+                      </div>
+                    </div>
+
+                    {/* GRI 2: General Disclosures */}
+                    <div>
+                      <h2 className="text-2xl font-semibold mb-4 text-teal-700">GRI 2: General Disclosures</h2>
+
+                      {/* Organization & Reporting Practices */}
+                      <div className="mb-6">
+                        <h3 className="text-xl font-medium mb-3">Organization & Reporting Practices</h3>
+
+                        {reportData.gri2_1_orgDetails && (
+                          <div className="mb-4">
+                            <h4 className="text-md font-medium">GRI 2-1: Organizational details</h4>
+                            <p className="whitespace-pre-line ml-2 mt-1">{reportData.gri2_1_orgDetails}</p>
+                          </div>
+                        )}
+
+                        {reportData.gri2_2_entities && (
+                          <div className="mb-4">
+                            <h4 className="text-md font-medium">GRI 2-2: Entities included</h4>
+                            <p className="whitespace-pre-line ml-2 mt-1">{reportData.gri2_2_entities}</p>
+                          </div>
+                        )}
+
+                        {reportData.gri2_3_reportingInfo && (
+                          <div className="mb-4">
+                            <h4 className="text-md font-medium">GRI 2-3: Reporting period</h4>
+                            <p className="whitespace-pre-line ml-2 mt-1">{reportData.gri2_3_reportingInfo}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Activities & Workers */}
+                      {(reportData.gri2_6_activities || reportData.gri2_7_employees) && (
+                        <div className="mb-6">
+                          <h3 className="text-xl font-medium mb-3">Activities & Workers</h3>
+
+                          {reportData.gri2_6_activities && (
+                            <div className="mb-4">
+                              <h4 className="text-md font-medium">GRI 2-6: Activities & value chain</h4>
+                              <p className="whitespace-pre-line ml-2 mt-1">{reportData.gri2_6_activities}</p>
+                            </div>
+                          )}
+
+                          {reportData.gri2_7_employees && (
+                            <div className="mb-4">
+                              <h4 className="text-md font-medium">GRI 2-7: Employees</h4>
+                              <p className="whitespace-pre-line ml-2 mt-1">{reportData.gri2_7_employees}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* GRI 3: Material Topics */}
+                    <div>
+                      <h2 className="text-2xl font-semibold mb-4 text-teal-700">GRI 3: Material Topics</h2>
+
+                      {reportData.gri3_1_process && (
+                        <div className="mb-6">
+                          <h3 className="text-xl font-medium mb-2">GRI 3-1: Process to determine material topics</h3>
+                          <p className="whitespace-pre-line ml-2 mt-1">{reportData.gri3_1_process}</p>
+                        </div>
+                      )}
+
+                      {reportData.gri3_2_list && (
+                        <div className="mb-6">
+                          <h3 className="text-xl font-medium mb-2">GRI 3-2: List of material topics</h3>
+                          <p className="whitespace-pre-line ml-2 mt-1">{reportData.gri3_2_list}</p>
+                        </div>
+                      )}
+
+                      {materialTopics.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-xl font-medium mb-4">GRI 3-3: Management of material topics</h3>
+
+                          {materialTopics.map((topic) => (
+                            topic.name ? (
+                              <div key={topic.id} className="mb-6 p-4 bg-muted/5 rounded-md">
+                                <h4 className="text-lg font-medium mb-2">{topic.name}</h4>
+
+                                {topic.description && (
+                                  <div className="mb-2">
+                                    <p className="text-sm font-medium">Description:</p>
+                                    <p className="whitespace-pre-line ml-2">{topic.description}</p>
+                                  </div>
+                                )}
+
+                                {topic.impacts && (
+                                  <div className="mb-2">
+                                    <p className="text-sm font-medium">Impacts:</p>
+                                    <p className="whitespace-pre-line ml-2">{topic.impacts}</p>
+                                  </div>
+                                )}
+
+                                {topic.policies && (
+                                  <div className="mb-2">
+                                    <p className="text-sm font-medium">Policies:</p>
+                                    <p className="whitespace-pre-line ml-2">{topic.policies}</p>
+                                  </div>
+                                )}
+
+                                {topic.actions && (
+                                  <div className="mb-2">
+                                    <p className="text-sm font-medium">Actions:</p>
+                                    <p className="whitespace-pre-line ml-2">{topic.actions}</p>
+                                  </div>
+                                )}
+                              </div>
+                            ) : null
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Metrics for GRI report */}
+                    {(reportData.scope1Emissions || reportData.scope2Emissions || reportData.scope3Emissions) && (
+                      <div className="bg-muted/10 p-4 rounded-md">
+                        <h3 className="text-xl font-medium mb-4">Emissions Data</h3>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Scope 1</p>
+                            <p className="text-2xl font-bold">{reportData.scope1Emissions || '0'} <span className="text-sm font-normal">tCO2e</span></p>
+                          </div>
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Scope 2</p>
+                            <p className="text-2xl font-bold">{reportData.scope2Emissions || '0'} <span className="text-sm font-normal">tCO2e</span></p>
+                          </div>
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Scope 3</p>
+                            <p className="text-2xl font-bold">{reportData.scope3Emissions || '0'} <span className="text-sm font-normal">tCO2e</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  /* Standard template previews */
+                  <>
+                    {template.sections.map((section, sectionIndex) => {
+                      const sectionContent = reportData[`section_${sectionIndex}`] || section.content;
+                      const hasSubsections = section.subsections && section.subsections.length > 0;
+
+                      return (
+                        <div key={sectionIndex} className="border-b pb-6 last:border-b-0">
+                          <h2 className="text-2xl font-semibold mb-4" style={template.color ? { color: template.color } : {}}>
+                            {section.title}
+                          </h2>
+
+                          {sectionContent && (
+                            <div className="mb-6">
+                              <p className="whitespace-pre-line">{sectionContent}</p>
+                            </div>
+                          )}
+
+                          {section.visual && TemplateVisuals[section.visual] && (
+                            <div className="my-6 p-4 bg-muted/20 rounded-md">
+                              {React.createElement(TemplateVisuals[section.visual])}
+                            </div>
+                          )}
+
+                          {hasSubsections && section.subsections && section.subsections.length > 0 && (
+                            <div className="space-y-6 pl-4 mt-4">
+                              {section.subsections.map((subsection, subIndex) => {
+                                const subsectionContent = reportData[`section_${sectionIndex}_sub_${subIndex}`] || subsection.content;
+
+                                return (
+                                  <div key={subIndex}>
+                                    <h3 className="text-xl font-medium mb-2">
+                                      {subsection.title}
+                                    </h3>
+                                    {subsectionContent && (
+                                      <p className="whitespace-pre-line">{subsectionContent}</p>
+                                    )}
+
+                                    {subsection.visual && TemplateVisuals[subsection.visual] && (
+                                      <div className="my-4 p-3 bg-muted/10 rounded-md">
+                                        {React.createElement(TemplateVisuals[subsection.visual])}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {/* Metrics visualization for standard templates */}
+                    {(reportData.scope1Emissions || reportData.scope2Emissions || reportData.scope3Emissions) && (
+                      <div className="bg-muted/30 p-4 rounded-md">
+                        <h3 className="text-xl font-medium mb-4">Emissions Data</h3>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Scope 1</p>
+                            <p className="text-2xl font-bold">{reportData.scope1Emissions || '0'} <span className="text-sm font-normal">tCO2e</span></p>
+                          </div>
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Scope 2</p>
+                            <p className="text-2xl font-bold">{reportData.scope2Emissions || '0'} <span className="text-sm font-normal">tCO2e</span></p>
+                          </div>
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Scope 3</p>
+                            <p className="text-2xl font-bold">{reportData.scope3Emissions || '0'} <span className="text-sm font-normal">tCO2e</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {(reportData.energyConsumption || reportData.waterConsumption || reportData.wasteGeneration) && (
+                      <div className="bg-muted/30 p-4 rounded-md mt-4">
+                        <h3 className="text-xl font-medium mb-4">Resource Usage</h3>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Energy</p>
+                            <p className="text-2xl font-bold">{reportData.energyConsumption || '0'} <span className="text-sm font-normal">MWh</span></p>
+                          </div>
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Water</p>
+                            <p className="text-2xl font-bold">{reportData.waterConsumption || '0'} <span className="text-sm font-normal">m³</span></p>
+                          </div>
+                          <div className="p-4 bg-card rounded-md shadow-sm">
+                            <p className="text-sm text-muted-foreground">Waste</p>
+                            <p className="text-2xl font-bold">{reportData.wasteGeneration || '0'} <span className="text-sm font-normal">t</span></p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

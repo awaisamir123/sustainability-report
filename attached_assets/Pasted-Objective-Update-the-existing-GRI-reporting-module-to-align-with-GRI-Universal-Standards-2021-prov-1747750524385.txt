@@ -1,0 +1,44 @@
+Objective: Update the existing GRI reporting module to align with GRI Universal Standards 2021, providing a structured template, editable fields for all required disclosures, user guidance, and export functionality. The module should enable users (report authors) to easily input and organize information for a GRI-compliant sustainability report. Key Updates to Implement:
+1. Structured Template (GRI 2 and GRI 3): Organize the module’s report template into the main sections as per GRI 2 and GRI 3. This includes:
+Section for GRI 2: General Disclosures – subdivided into:
+Organization & Reporting Practices (GRI 2-1 to 2-5)
+Activities & Workers (GRI 2-6 to 2-8)
+Governance (GRI 2-9 to 2-21)
+Strategy, Policies & Practices (GRI 2-22 to 2-28)
+Stakeholder Engagement (GRI 2-29, 2-30)
+Section for GRI 3: Material Topics – including:
+Materiality Process (GRI 3-1) – description of how material topics are determined.
+Material Topics List (GRI 3-2) – an area to list the topics identified.
+Management of Each Material Topic (GRI 3-3) – a repeatable subsection template for each material topic, where users can input the required management approach info and link to topic-specific metrics.
+Ensure each subsection corresponds to the exact GRI disclosure number(s) and title. For clarity, label fields with the GRI code (e.g., “GRI 2-1: Organizational Details – Enter organization name, type, location...”).
+2. Editable Fields for Required Disclosures: Provide input fields or rich text areas for every disclosure requirement:
+For simple factual disclosures (e.g., 2-1 Org details, 2-3 Reporting period) use text fields or short text areas.
+For narrative disclosures (e.g., 2-6 Value chain description, 2-13 Delegation of responsibility) use larger text areas to allow paragraph entries.
+Use dynamic or repeatable field groups for disclosures that might require multiple entries:
+For example, 2-2 Entities included – allow the user to add a list of entities.
+2-7 Employees – perhaps a small table input for number by gender/region.
+3-3 Material topics management – allow the user to create a new “topic section” for each material topic. This could be implemented as a form that generates a new sub-page or section where they fill in details for that topic (impacts, policies, actions, KPIs, etc.).
+Include fields for GRI content index information (or auto-generate it based on filled fields). The module can compile the content index at the end from what the user has input and the structure.
+3. Sectional Guidance & Help Text: For each section or field, provide guidance to the user on what to include, drawn from GRI’s requirements:
+E.g., when the user is filling out GRI 2-6 (Activities, Value Chain), display helper text: “Describe the sectors you operate in, key products/services, supply chain structure, and any significant changes since last period.”
+For GRI 3-1 (Materiality Process), a prompt like: “Explain how you identified and prioritized material topics, including stakeholder involvement.”
+For each material topic (GRI 3-3), provide a template or checklist in the UI: “For this topic, describe: a) the impacts (negative/positive), b) your involvement (cause, contribute, linked), c) policies or commitments, d) actions taken (preventing negative, addressing incidents, enhancing positives), e) how you track performance (KPIs, targets), f) how stakeholder feedback is used.”
+These hints will guide users to provide the necessary information and maintain compliance with GRI requirements. Consider making the guidance toggle-able (like info icons or collapsible tips) so it doesn’t overwhelm experienced users but is available for those who need it.
+Include placeholders/examples in fields where appropriate (for instance, a placeholder text in 2-5 External assurance field might read: “E.g., ‘No external assurance. Internal QA processes in place.’ or details of assurance provider and scope.”).
+4. Validation / Completeness Checks: Implement checks or indicators to ensure no required disclosure is missed:
+Perhaps a progress checklist that tracks if each GRI 2-# and 3-# field has content. Warn the user if something is empty that shouldn’t be (for “in accordance” reports, 2-1 to 2-5 and 3-1, 3-2 must not be omitted).
+Provide an “omit with reason” option if absolutely necessary (GRI allows omissions only with valid reasons for certain disclosures). If a user marks a disclosure as omitted, prompt them to enter the reason (which will be included in the content index or report as required).
+5. Export-Ready Output (PDF/Word): Ensure that the module can compile the filled template into a well-formatted report document:
+Preserve the heading hierarchy (H1 for title, H2 for sections, H3 for sub-sections, etc.) so that the output is structured and easy to navigate.
+Include the GRI Content Index automatically generated at the end of the report, listing each disclosure and where it’s addressed (the module can create this by mapping filled sections to disclosure numbers).
+Make sure tables or lists (like workforce data or material topics lists) are properly formatted in the output.
+Test PDF and Word export to handle special characters and any images (if users can attach graphs or images, these should export correctly too).
+The exported report should be professional and nearly publication-ready, requiring minimal editing. It should meet GRI’s principle of clarity – e.g., clearly labeled sections, consistent formatting.
+Optionally, incorporate a cover page and space for a CEO letter if not already covered, and a table of contents for easy navigation in the PDF/Word.
+6. Flexibility and User Customization: While enforcing structure, allow some customization:
+Let users add additional sections if needed (some may want to include a message from CEO before GRI 2-1, or add non-GRI content). The module could allow insertion of custom text sections that won’t affect GRI compliance, while keeping the core structure intact.
+Allow re-ordering to a degree (some users might present the GRI 2-22 strategy message at the very start as a CEO letter, which is okay as long as content index references it). The module’s content index generation should accommodate if a disclosure is addressed out of the default order.
+Ensure the module supports multiple use cases: “in accordance” full reports versus “with reference” (if with reference, user might not fill everything, but then statement of use will be different – consider a toggle for in accordance vs with reference mode, which adjusts which fields are mandatory and the statement language).
+7. Notify/Completion (Optional): (As per GRI 1, organizations in accordance are supposed to notify GRI.) While the module might not handle this, it could remind the user at the end that “if your report is published in accordance, you should notify GRI via their website.” This is a minor addition, but shows completeness.
+8. Testing and Examples: Populate the module with an example (like a demo company pre-filled data akin to the sample report above) to demonstrate how each field maps to output. This helps developers verify that every field flows correctly to the compiled report, and it helps end-users see a model output if needed (perhaps provide a “view example report” feature).
+By implementing the above, developers will deliver a robust GRI reporting tool that ensures proper structure (alignment with GRI 2 and 3 sections), provides editable fields for every required disclosure, offers guidance so users know what information to input, and generates an export-ready PDF/Word output that is formatted as a complete sustainability report. The end result will facilitate accurate, comprehensive, and user-friendly GRI-aligned reporting for organizations using the module.

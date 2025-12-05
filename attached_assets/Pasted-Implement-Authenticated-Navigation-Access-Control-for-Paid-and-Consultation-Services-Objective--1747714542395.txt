@@ -1,0 +1,101 @@
+Implement Authenticated Navigation & Access Control for Paid and Consultation Services
+🎯 Objective
+Enhance the user experience of the app by allowing registered users to access and explore all module landing pages. Restrict usage of paid and consultation-based services behind appropriate access logic, while maintaining a seamless navigation flow post-login.
+
+🛠️ Features to Implement
+1. Post-Registration Navigation
+Once a user registers or logs in, redirect them to the main dashboard (or home page).
+
+Ensure all left navigation menu items are visible after login.
+
+Update user state with:
+
+isAuthenticated: true
+
+servicesPurchased: [ ]
+
+consultationBooked: [ ]
+
+2. Landing Page Access
+All users (logged-in or not) should be able to access public landing pages for each module:
+
+Sustainability Report Generator
+
+GHG Emission Calculator
+
+PCF Calculator
+
+ESG Rating Calculator
+
+Benchmarking
+
+Compliance & Certification
+
+Materiality Assessment
+
+These landing pages should describe:
+
+Module purpose
+
+Sample features/outputs
+
+CTA buttons: “Purchase Access” or “Book Consultation”
+
+3. Service Access Control Logic
+For each paid module:
+
+js
+Copy
+Edit
+if (!user.servicesPurchased.includes(moduleName)) {
+   showAccessLockedMessage();
+   showPaymentCTA();
+} else {
+   renderFullModule();
+}
+For each consultation module:
+
+js
+Copy
+Edit
+if (!user.consultationBooked.includes(moduleName)) {
+   showBookConsultationCTA(); // e.g., Calendly link or placeholder
+} else {
+   renderServiceDetails();
+}
+⚠️ Use dummy flags or mock payment states now. Later, you will integrate Stripe or Calendly API.
+
+4. Navigation Experience
+Ensure left navigation reflects all available modules.
+
+Add small lock icon or “Premium” label next to gated modules.
+
+On click:
+
+If not purchased → take to landing page with CTA
+
+If purchased → take to tool interface
+
+5. User Profile Section
+Add a “My Services” tab showing:
+
+Purchased modules
+
+Upcoming consultations
+
+This should pull from user state or mock backend
+
+✅ Deliverables
+All landing pages accessible post-login
+
+Logic for gated service access with dummy payment/booking check
+
+UI banners/buttons for:
+
+"Unlock this Feature"
+
+"Book a Paid Consultation"
+
+Flag-based module rendering
+
+Profile page showing purchase/consultation history

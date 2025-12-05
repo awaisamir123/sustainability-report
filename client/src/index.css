@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70;
+  }
+  
+  .card-gradient {
+    @apply bg-gradient-to-br from-white to-neutral-50;
+  }
+}
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 210 100% 73%;
+  --muted: 157 58% 48%;
+  --muted-foreground: 210 100% 73%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 100% 73%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 100% 73%;
+  --border: 210 100% 73%;
+  --input: 210 100% 73%;
+  --primary: 210 100% 73%;
+  --primary-foreground: 0 0% 100%;
+  --primary-900: 157 58% 48%;
+  --secondary: 157 58% 48%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 157 58% 48%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 210 100% 73%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 0 0% 7%;
+  --foreground: 0 0% 98%;
+  --muted: 195 35% 18%;
+  --muted-foreground: 180 20% 70%;
+  --popover: 0 0% 9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 0 0% 9%;
+  --card-foreground: 0 0% 98%;
+  --border: 195 35% 25%;
+  --input: 195 35% 25%;
+  --primary: 165 60% 45%;
+  --primary-foreground: 355 100% 100%;
+  --secondary: 195 35% 25%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 165 60% 45%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 165 60% 35%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    @apply antialiased bg-background text-foreground;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+}

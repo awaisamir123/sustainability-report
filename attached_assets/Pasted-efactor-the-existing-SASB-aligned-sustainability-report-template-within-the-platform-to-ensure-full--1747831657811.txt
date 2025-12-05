@@ -1,0 +1,68 @@
+efactor the existing SASB-aligned sustainability report template within the platform to ensure full compliance with the IFRS Sustainability Disclosure Standards – S1 and S2. The goal is to align the template structure, section headers, metrics, and visual elements with the official IFRS guidelines, while keeping it sector-specific using SASB's materiality topics.
+
+🔧 Tasks for Replit Agent
+1. 🏗️ Update the Template Structure
+IFRS S1 Compliance:
+
+Ensure the report includes these required sections:
+
+Executive Summary
+
+Governance of sustainability-related risks and opportunities
+
+Strategy and decision-making impacts
+
+Risk management processes
+
+Metrics and targets aligned with material topics
+
+IFRS S2 Compliance:
+
+Add the following climate-specific sections:
+
+Climate-related governance and oversight
+
+Climate risks, opportunities, and resilience
+
+GHG emissions: Scope 1, 2, 3
+
+Transition plans and climate targets
+
+Scenario analysis (1.5°C, 2°C)
+
+⚠️ Use the SASB sector selector to auto-fill applicable material topics for both S1 and S2 reports.
+
+2. 📊 Add Dynamic Charts & Data Visualizations
+Integrate the following charts using user input data (e.g., emissions, targets, ESG KPIs):
+
+Chart Type	Use Case
+Bar Chart	Scope 1/2/3 emissions (YoY)
+Pie Chart	Emissions share by scope or renewable vs non-renewable energy
+Progress Bar	Net-zero or emissions reduction goals
+Line Chart	Scenario analysis outcomes or KPI progress
+Risk Matrix	Probability × Impact for climate risks
+
+3. 📝 Make Fields Editable & Guided
+Add descriptive labels and tooltips for all key fields (e.g., “What is Scope 3?”, “How to define climate resilience?”).
+
+Include dropdowns for units (tCO₂e, %, $) and sector-based KPIs.
+
+Enable conditional fields based on user selections (e.g., show Scope 3 categories when selected).
+
+4. 🖥️ Update Report Preview and Export
+Ensure all updates reflect in the live preview panel.
+
+Include all visual elements in the:
+
+PDF export (via html2pdf)
+
+DOCX export (via docx.js)
+
+Ensure formatting remains consistent with the overall style of other reporting modules (e.g., Sustainability Statement Builder).
+
+5. 🎨 Styling Enhancements
+Use Tailwind for consistent design.
+
+Use SASB + IFRS icons for visual clarity.
+
+Maintain light/dark mode support.

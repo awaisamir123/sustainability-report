@@ -1,0 +1,63 @@
+Objective:
+Enhance the existing GHG Protocol report generator by integrating visualizations that dynamically generate charts and graphs using the user's provided emissions and sustainability data. These visual elements should appear in the live preview and be included in the PDF and DOCX exports of the final report.
+
+🔸 Tasks for Replit Agent
+Enable User Input → Data Mapping
+
+Use existing input fields for:
+
+Scope 1, 2, and 3 emissions data (tCO₂e)
+
+Energy usage (% renewable vs non-renewable)
+
+Year-over-year emissions (for at least 2 years)
+
+Scope 3 breakdowns (optional)
+
+Generate the Following Charts in Real Time
+
+Chart Type	Description
+Pie Chart	Emission share by scope (Scope 1, 2, 3)
+Line/Bar Chart	Year-over-year comparison of total GHG emissions (by scope)
+Stacked Bar Chart	Scope 3 categories breakdown (e.g., business travel, purchased goods, etc.)
+Progress Bar	Emission reduction target progress
+Donut Chart	Renewable energy usage % vs non-renewable
+
+📌 Use Chart.js (preferred) or a lightweight JS charting library compatible with Replit.
+
+Integrate into the Report Preview
+
+Display these visuals in-line within the live report preview (between "Metrics & Targets" and "Appendices").
+
+Charts should auto-update as users modify input fields.
+
+Include labels, legends, and tooltips for clarity.
+
+Include Visuals in Export
+
+Ensure all charts are rendered in the PDF (via html2pdf) and Word export (via docx.js) versions.
+
+Charts should preserve resolution and layout integrity in exports.
+
+Styling
+
+Match chart color palette to app’s theme (light/dark mode compatible)
+
+Add section headers like: "📊 Emissions Overview", "📈 Target Progress"
+
+Optional UX Enhancements
+
+Add a toggle to “Show/Hide Charts”
+
+Include explanatory footnotes or captions under each chart
+
+Add placeholder visuals when no data is available yet
+
+✅ Expected Outcome
+Users should be able to:
+
+Enter their emissions and sustainability data
+
+Instantly view summary charts in the report preview
+
+Download the final GHG Protocol report with graphs included in both PDF and DOCX formats

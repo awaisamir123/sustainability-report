@@ -1,0 +1,133 @@
+Paid Access Logic for GHG, PCF, and ESG Modules + Auth-Gated Navigation from Report Generator
+🎯 Objective
+Implement a seamless gated access experience for the following modules:
+
+GHG Emission Calculator (paid)
+
+Product Carbon Footprint Calculator (paid)
+
+ESG Rating Module (split: free assessment via form + premium calculator)
+
+Sustainability Report Generator → Full Platform Redirect with Login
+
+All access controls must be accompanied by clear UI prompts, pricing details, and redirects for login/registration when required.
+
+🛠️ Feature Implementation Breakdown
+🔹 1. GHG Emission Calculator – Paid Module
+Landing Page (public):
+
+Overview of GHG Emission Calculator
+
+Benefits, use cases, and key features
+
+Pricing Panel:
+
+Label: “Unlock GHG Emission Calculator”
+
+Price: $99 USD
+
+Button: Buy Now
+
+If user is not logged in → prompt login/register on click
+
+If logged in → simulate payment state (user.servicesPurchased.includes("ghg_calculator"))
+
+If purchased → show full calculator UI
+
+🔹 2. Product Carbon Footprint Calculator – Paid Module
+Landing Page (public):
+
+Overview of PCF calculator
+
+Supported standards: ISO 14067, GHG Protocol Product Standard
+
+Pricing Panel:
+
+Label: “Access Full PCF Calculator”
+
+Price: $99 USD
+
+Button: Buy Access
+
+Same conditional rendering logic as above
+
+🔹 3. ESG Rating Module – Dual Access Options
+Landing Page (public):
+
+Brief on ESG and why it matters
+
+Two distinct sections:
+
+🔸 Option A: Free ESG Assessment
+Embedded Google Form iframe
+
+Label: “Quick ESG Self-Assessment (Free)”
+
+No authentication needed
+
+🔸 Option B: Premium ESG Rating Calculator
+Feature overview and benefits
+
+Price: $60 USD
+
+Button: Try Premium Rating Tool
+
+Redirect to login/register if unauthenticated
+
+After login and purchase (user.servicesPurchased.includes("esg_rating")), unlock full calculator
+
+✅ Use route-based logic to ensure /esg-rating-calculator checks access status
+
+🔹 4. “Access Full Platform” Button on Report Generator Page
+Add a clear CTA button:
+
+mathematica
+Copy
+Edit
+Button: “Access Full Sustainability Platform”
+When clicked:
+
+If user.isAuthenticated is false → Redirect to login/registration
+
+After login → Route user to /dashboard or /modules
+
+If already logged in → allow direct navigation
+
+🔹 5. Redirect from ESG Assessment "Try it Now" Button
+On this live URL:
+https://4166686e-879a-4d4d-9447-93d00613a233-00-3cr1jn3gcc00p.riker.replit.dev/
+
+For the “Try it now” button:
+
+Add redirect to /esg-rating-calculator
+
+If user is not logged in:
+
+Prompt login
+
+After login, auto-navigate to the ESG Rating Calculator page
+
+Use query parameter or session memory to track original intent
+
+🧾 Deliverables
+Public landing pages for:
+
+/ghg-calculator
+
+/pcf-calculator
+
+/esg-rating
+
+Access-locked feature rendering based on user.servicesPurchased
+
+Dynamic pricing panels for $99 and $60 services
+
+Auth-required redirection logic for:
+
+Paid features
+
+“Access Full Platform” button
+
+“Try it now” button on ESG Assessment
+
+Embedded Google Form for free ESG self-check
